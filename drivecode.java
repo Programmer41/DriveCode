@@ -21,6 +21,8 @@ public class drivecode extends LinearOpMode {
     private DcMotor ShooterMotor2 = null;
     double speedLimiter = 1.65;
     double Voltage;
+    double shooterPower = 0;
+
     @Override
     public void runOpMode() {
 
@@ -44,6 +46,8 @@ public class drivecode extends LinearOpMode {
         BL.setDirection(DcMotor.Direction.REVERSE);
         FR.setDirection(DcMotor.Direction.FORWARD);
         BR.setDirection(DcMotor.Direction.FORWARD);
+        ShooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
+        ShooterMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
 
 //        //darkstar
 //        FL.setDirection(DcMotor.Direction.FORWARD);
@@ -68,9 +72,6 @@ public class drivecode extends LinearOpMode {
         BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         ShooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         ShooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-
 
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -99,7 +100,6 @@ public class drivecode extends LinearOpMode {
 
             // Display voltage on Driver Station telemetry
             telemetry.addData("Battery Voltage", "%.2f V", voltage);
-            telemetry.update();
 
             if (gamepad2.dpad_down) {
                 speedLimiter = 2;
@@ -154,37 +154,53 @@ public class drivecode extends LinearOpMode {
             BR.setPower(rightBackPower);
 
 
+            // SHOOTER 1
 
             if (gamepad1.right_trigger > 0.05) {
-                ShooterMotor1.setPower(gamepad1.right_trigger);
+                shooterPower += 0.01;
+
+                if (shooterPower > 1) shooterPower = 1;
+
+            } else {
+                shooterPower -= 0.01;
+                if (shooterPower < 0) shooterPower = 0;
             }
 
-            else {
-                ShooterMotor1.setPower(0);
+
+            if (gamepad1.right_bumper) {
+                ShooterMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
+                ShooterMotor1.setPower(0.7);
+            } else {
+                ShooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
+                ShooterMotor1.setPower(shooterPower);
 
             }
-            if (gamepad1.left_trigger > 0.05) {
+
+            // SHOOTER MOTOR 2
+            if (gamepad2.left_bumper) {
+                ShooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+                ShooterMotor2.setPower(0.7);
+            } else if (gamepad1.left_trigger > 0.05) {
+                ShooterMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
                 ShooterMotor2.setPower(gamepad1.left_trigger);
-            }
-
-            else {
+            } else {
                 ShooterMotor2.setPower(0);
 
             }
 
+
             // TRIGGER ALT CODE INCASE
 
             //double shooterPower1 = gamepad1.right_trigger; //motor 1 uses right trigger
-           // double shooterPower2 = gamepad1.left_trigger; //motor 2 uses left trigger
+            // double shooterPower2 = gamepad1.left_trigger; //motor 2 uses left trigger
 
 
             //full power if they are pressed
-           // if (gamepad1.right_bumper) shooterPower1 = 1;
-           // if (gamepad1.left_bumper) shooterPower2 = 1;
+            // if (gamepad1.right_bumper) shooterPower1 = 1;
+            // if (gamepad1.left_bumper) shooterPower2 = 1;
 
-           // ShooterMotor1.setPower(shooterPower1);
-           // ShooterMotor2.setPower(shooterPower2);
-
+            // ShooterMotor1.setPower(shooterPower1);
+            // ShooterMotor2.setPower(shooterPower2);
 
 
             // Show the elapsed game time and wheel power.
@@ -196,3 +212,4 @@ public class drivecode extends LinearOpMode {
         }
     }
 }
+
