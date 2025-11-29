@@ -180,7 +180,7 @@ public class drivecode extends LinearOpMode {
             if (gamepad2.left_bumper) {
                 ShooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
                 ShooterMotor2.setPower(0.7);
-            } else if (gamepad1.left_trigger > 0.05) {
+            } else if (gamepad2.left_trigger > 0.05) {
                 ShooterMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
                 ShooterMotor2.setPower(gamepad1.left_trigger);
             } else {
